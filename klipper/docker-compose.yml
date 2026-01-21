@@ -1,0 +1,43 @@
+version: '3'
+services:
+  klipper:
+    image: mkuf/klipper:latest
+    restart: unless-stopped
+    privileged: true  
+    environment:
+      - TZ=Asia/Jakarta
+    volumes:
+      - ./config:/opt/printer_data/config
+      - ./run:/opt/printer_data/run
+      - ./gcodes:/opt/printer_data/gcodes
+      - ./logs:/opt/printer_data/logs
+      - /dev:/dev
+      - /run/udev:/run/udev:ro
+      - klipper-src:/opt/klipper
+
+  moonraker:
+    image: mkuf/moonraker:latest
+    restart: unless-stopped
+    depends_on:
+      - klipper
+    volumes:
+      - ./config:/opt/printer_data/config
+      - ./run:/opt/printer_data/run
+      - ./gcodes:/opt/printer_data/gcodes
+      - ./logs:/opt/printer_data/logs
+      - /tmp:/tmp
+      - klipper-src:/opt/klipper:ro
+      
+    ports:
+      - "7125:7125"
+
+  mainsail:
+    image: ghcr.io/mainsail-crew/mainsail:latest
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./config/mainsail.json:/usr/share/nginx/html/config.json
+
+volumes:
+  klipper-src:

@@ -1,0 +1,13 @@
+{
+    "instancesDB": "json",
+    "instances": [
+        {
+            "hostname": "pi.lobster-codlet.ts.net",
+            "port": 7125
+        },
+        {
+            "hostname": "pi.local",
+            "port": 7125
+        }
+    ]
+}
