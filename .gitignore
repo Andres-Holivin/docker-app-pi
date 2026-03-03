@@ -14,3 +14,5 @@ nextcloud/redis
 proxy-manager/data
 proxy-manager/letsencrypt
 proxy-manager/mysql
+
+n8n/n8n_data
