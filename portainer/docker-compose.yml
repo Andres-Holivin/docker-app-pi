@@ -3,6 +3,7 @@ services:
   portainer:
     image: portainer/portainer-ce:latest
     ports:
+      - 9000:9000
       - 9443:9443
     volumes:
       - data:/data
