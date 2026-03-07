@@ -16,3 +16,7 @@ proxy-manager/letsencrypt
 proxy-manager/mysql
 
 n8n/n8n_data
+
+klipper/gcodes
+klipper/logs
+klipper/run
