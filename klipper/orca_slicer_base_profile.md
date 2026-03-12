@@ -57,16 +57,11 @@ G92 E0
 Paste into Orca `Printer Settings -> Machine G-code -> End G-code`:
 
 ```gcode
-M400
-G92 E0
-G1 E-1.0 F1800
-G91
-G1 Z10 F600
-G90
-G1 X0 Y170 F6000
-TURN_OFF_HEATERS
-M107
+END_PRINT
 ```
+
+This uses the Klipper macro in `config/printer.cfg`, which already lifts Z and
+parks at `X0 Y0`.
 
 ## 6) Recommended Process Baseline
 

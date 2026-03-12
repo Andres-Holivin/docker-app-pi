@@ -83,22 +83,72 @@ docker compose restart klipper moonraker
 - `safe_z_home`
 - `bed_mesh`
 
+Important: the current probe offset is `x_offset: 70`, `y_offset: -4`.
+That means all probe-based operations must use XY positions chosen for the
+probe, not just the nozzle. The current config homes and calibrates at nozzle
+position `X40 Y59`, which places the probe at `X110 Y55`. The current mesh is
+kept inside probe coordinates `35,15` to `185,95` with `horizontal_move_z: 10`
+to avoid starting a probe move too close to the bed.
+
+Important: in this config the X endstop is not `X0`. The X home switch is
+`X=-40`, while `X0 Y0` is the front-left bed origin used for printing.
+
 First-time checks in Mainsail console:
 
 ```text
 QUERY_PROBE
-SET_SERVO SERVO=z_probe_servo ANGLE=10
-SET_SERVO SERVO=z_probe_servo ANGLE=90
+SET_SERVO SERVO=z_probe_servo ANGLE=25
+SET_SERVO SERVO=z_probe_servo ANGLE=180
 G28
-PROBE_CALIBRATE
+CALIBRATE_Z_OFFSET
 SAVE_CONFIG
 BED_MESH_CALIBRATE
 SAVE_CONFIG
 ```
 
+If you want to run it manually without the macro, do this exact sequence:
+
+```text
+G28
+G1 X40 Y59 F6000
+PROBE_CALIBRATE
+```
+
+After `SAVE_CONFIG`, Klipper restarts and forgets the current position. If you
+want it parked at `X0 Y0` after the restart, run:
+
+```text
+PARK_FRONT_LEFT
+```
+
+Do not start `PROBE_CALIBRATE` from an arbitrary XY position. With the current
+probe offset, mesh and calibration coordinates must stay inside the probe's
+reachable bed area or Klipper will halt with `Move out of range`.
+
 If deploy/stow is reversed, swap the two servo angles in `config/printer.cfg`.
 
-## 6) Daily commands
+## 6) Slicer end G-code
+
+To finish every print at `X0 Y0`, set Orca `Printer Settings -> Machine G-code
+-> End G-code` to:
+
+```gcode
+END_PRINT
+```
+
+`END_PRINT` is defined in `config/printer.cfg` and already does:
+- retract
+- lift Z
+- move to `X0 Y0`
+- turn heaters and fan off
+
+If you want the nozzle to go to the physical X/Y switches instead of the bed
+origin, that is `G28 X Y`, not `X0 Y0`.
+
+Important: this only affects newly sliced files. If a `.gcode` file was already
+exported, it keeps the old end G-code until you re-slice it.
+
+## 7) Daily commands
 
 ```bash
 cd ~/docker-app-pi/klipper
@@ -108,7 +158,7 @@ docker compose restart klipper moonraker
 docker compose pull && docker compose up -d
 ```
 
-## 7) Useful files
+## 8) Useful files
 
 - `config/printer.cfg`
 - `config/moonraker.conf`
