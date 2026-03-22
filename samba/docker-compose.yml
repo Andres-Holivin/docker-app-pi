@@ -1,0 +1,19 @@
+services:
+  samba:
+    image: dperson/samba:latest
+    container_name: samba
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ:-UTC}
+    command: >
+      -g "force user = root"
+      -g "force group = root"
+      -u "${SAMBA_USER:-samba};${SAMBA_PASS:-ChangeMe123}"
+      -s "${SAMBA_SHARE_NAME:-hdd};${SAMBA_HDD_PATH:-/mnt/hdd1tb};yes;no;yes;all;none;none"
+    ports:
+      - "137:137/udp"
+      - "138:138/udp"
+      - "139:139/tcp"
+      - "445:445/tcp"
+    volumes:
+      - ${SAMBA_HDD_PATH:-/mnt/hdd1tb}:${SAMBA_HDD_PATH:-/mnt/hdd1tb}
