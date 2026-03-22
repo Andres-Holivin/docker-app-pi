@@ -10,6 +10,8 @@ nextcloud/data
 nextcloud/html
 nextcloud/nextclouddb
 nextcloud/redis
+nextcloud/db
+
 
 proxy-manager/data
 proxy-manager/letsencrypt
@@ -22,3 +24,5 @@ klipper/logs
 klipper/run
 
 supabase/.env
+
+.env
