@@ -134,7 +134,7 @@ services:
   ## Secure Realtime routes
   - name: realtime-v1-ws
     _comment: 'Realtime: /realtime/v1/* -> ws://realtime:4000/socket/*'
-    url: http://realtime-dev.supabase-realtime:4000/socket
+    url: http://realtime-prod.supabase-realtime:4000/socket
     protocol: ws
     routes:
       - name: realtime-v1-ws
@@ -154,7 +154,7 @@ services:
             - anon
   - name: realtime-v1-rest
     _comment: 'Realtime: /realtime/v1/* -> ws://realtime:4000/socket/*'
-    url: http://realtime-dev.supabase-realtime:4000/api
+    url: http://realtime-prod.supabase-realtime:4000/api
     protocol: http
     routes:
       - name: realtime-v1-rest
@@ -265,14 +265,22 @@ services:
         paths:
           - /mcp
     plugins:
-      - name: cors
-      - name: ip-restriction
+      # Block access to /mcp by default
+      - name: request-termination
         config:
-          allow:
-            - 127.0.0.1
-            - ::1
-            - 192.168.1.5
-          deny: []
+          status_code: 403
+          message: "Access is forbidden."
+      # Enable local access (danger zone!)
+      # 1. Comment out the 'request-termination' section above
+      # 2. Uncomment the entire section below, including 'deny'
+      # 3. Add your local IPs to the 'allow' list
+      #- name: cors
+      #- name: ip-restriction
+      #  config:
+      #    allow:
+      #      - 127.0.0.1
+      #      - ::1
+      #    deny: []
 
   ## Protected Dashboard - catch all remaining routes
   - name: dashboard

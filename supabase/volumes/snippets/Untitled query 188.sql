@@ -1,0 +1,1 @@
+drop schema drizzle CASCADE

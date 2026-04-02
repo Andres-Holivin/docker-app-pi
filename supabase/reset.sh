@@ -55,21 +55,6 @@ for dir in $BIND_MOUNTS; do
     fi
 done
 
-echo "===> Resetting .env file (will save backup to .env.old)..."
-confirm
-if [ -f ".env" ] || [ -L ".env" ]; then
-    echo "Renaming existing .env file to .env.old"
-    mv .env .env.old
-else
-    echo "No .env file found."
-fi
-
-if [ -f ".env.example" ]; then
-    echo "===> Copying .env.example to .env"
-    cp .env.example .env
-else
-    echo "No .env.example found, can't restore .env to default values."
-fi
 
 echo "Cleanup complete!"
 echo "Re-run 'docker compose pull' to update images."
